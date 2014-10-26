@@ -387,7 +387,7 @@ static int32_t PIOS_L3GD20_ReadGyros(struct pios_l3gd20_data *data)
 	PIOS_L3GD20_ReleaseBus();
 
 	memcpy((uint8_t *)&data->gyro_x, &rec[1], 6);
-	data->temperature = PIOS_L3GD20_GetReg(PIOS_L3GD20_OUT_TEMP);
+	data->temperature = 25+(25-(int8_t)PIOS_L3GD20_GetReg(PIOS_L3GD20_OUT_TEMP));
 
 	return 0;
 }
@@ -477,7 +477,7 @@ bool PIOS_L3GD20_IRQHandler(void)
 	normalized_data.y = data.gyro_x * scale;
 	normalized_data.x = data.gyro_y * scale;
 	normalized_data.z = -data.gyro_z * scale;
-	normalized_data.temperature = PIOS_L3GD20_GetRegIsr(PIOS_L3GD20_OUT_TEMP, &woken);
+	normalized_data.temperature = 25+(25-(int8_t)PIOS_L3GD20_GetRegIsr(PIOS_L3GD20_OUT_TEMP, &woken));
 
 	PIOS_Queue_Send_FromISR(pios_l3gd20_dev->queue, &normalized_data, &woken);
 
