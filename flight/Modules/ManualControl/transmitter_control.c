@@ -705,17 +705,24 @@ static bool updateRcvrActivityCompare(uintptr_t rcvr_id, struct rcvr_activity_fs
 			case MANUALCONTROLSETTINGS_CHANNELGROUPS_DSMFLEXIPORT:
 				group = RECEIVERACTIVITY_ACTIVEGROUP_DSMFLEXIPORT;
 				break;
-			case MANUALCONTROLSETTINGS_CHANNELGROUPS_HOTTSUM:
-				group = RECEIVERACTIVITY_ACTIVEGROUP_HOTTSUM;
+			case MANUALCONTROLSETTINGS_CHANNELGROUPS_DSMRCVRPORT:
+				group = RECEIVERACTIVITY_ACTIVEGROUP_DSMRCVRPORT;
 				break;
 			case MANUALCONTROLSETTINGS_CHANNELGROUPS_SBUS:
 				group = RECEIVERACTIVITY_ACTIVEGROUP_SBUS;
 				break;
+			case MANUALCONTROLSETTINGS_CHANNELGROUPS_RFM22B:
+				group = RECEIVERACTIVITY_ACTIVEGROUP_RFM22B;
+				break;
 			case MANUALCONTROLSETTINGS_CHANNELGROUPS_GCS:
 				group = RECEIVERACTIVITY_ACTIVEGROUP_GCS;
 				break;
+			case MANUALCONTROLSETTINGS_CHANNELGROUPS_HOTTSUM:
+				group = RECEIVERACTIVITY_ACTIVEGROUP_HOTTSUM;
+				break;
 			default:
-				PIOS_Assert(0);
+				set_manual_control_error(SYSTEMALARMS_MANUALCONTROL_UNDEFINED);
+				group = RECEIVERACTIVITY_ACTIVEGROUP_PWM;
 				break;
 			}
 
@@ -858,6 +865,7 @@ static void update_stabilization_desired(ManualControlCommandData * cmd, ManualC
 	     (stab_settings[0] == STABILIZATIONDESIRED_STABILIZATIONMODE_AXISLOCK) ? expo3(cmd->Roll, stabSettings.RateExpo[STABILIZATIONSETTINGS_RATEEXPO_ROLL]) * stabSettings.ManualRate[STABILIZATIONSETTINGS_MANUALRATE_ROLL] :
 	     (stab_settings[0] == STABILIZATIONDESIRED_STABILIZATIONMODE_VIRTUALBAR) ? cmd->Roll :
 	     (stab_settings[0] == STABILIZATIONDESIRED_STABILIZATIONMODE_HORIZON) ? cmd->Roll :
+	     (stab_settings[0] == STABILIZATIONDESIRED_STABILIZATIONMODE_MWRATE) ? expo3(cmd->Roll, stabSettings.RateExpo[STABILIZATIONSETTINGS_RATEEXPO_ROLL]) :
 	     (stab_settings[0] == STABILIZATIONDESIRED_STABILIZATIONMODE_SYSTEMIDENT) ? cmd->Roll * stabSettings.RollMax :
 	     (stab_settings[0] == STABILIZATIONDESIRED_STABILIZATIONMODE_COORDINATEDFLIGHT) ? cmd->Roll :
 	     0; // this is an invalid mode
@@ -869,6 +877,7 @@ static void update_stabilization_desired(ManualControlCommandData * cmd, ManualC
 	     (stab_settings[1] == STABILIZATIONDESIRED_STABILIZATIONMODE_AXISLOCK) ? expo3(cmd->Pitch, stabSettings.RateExpo[STABILIZATIONSETTINGS_RATEEXPO_PITCH]) * stabSettings.ManualRate[STABILIZATIONSETTINGS_MANUALRATE_PITCH] :
 	     (stab_settings[1] == STABILIZATIONDESIRED_STABILIZATIONMODE_VIRTUALBAR) ? cmd->Pitch :
 	     (stab_settings[1] == STABILIZATIONDESIRED_STABILIZATIONMODE_HORIZON) ? cmd->Pitch :
+	     (stab_settings[1] == STABILIZATIONDESIRED_STABILIZATIONMODE_MWRATE) ? expo3(cmd->Pitch, stabSettings.RateExpo[STABILIZATIONSETTINGS_RATEEXPO_PITCH]) :
 	     (stab_settings[1] == STABILIZATIONDESIRED_STABILIZATIONMODE_SYSTEMIDENT) ? cmd->Pitch * stabSettings.PitchMax :
 	     (stab_settings[1] == STABILIZATIONDESIRED_STABILIZATIONMODE_COORDINATEDFLIGHT) ? cmd->Pitch :
 	     0; // this is an invalid mode
@@ -880,6 +889,7 @@ static void update_stabilization_desired(ManualControlCommandData * cmd, ManualC
 	     (stab_settings[2] == STABILIZATIONDESIRED_STABILIZATIONMODE_AXISLOCK) ? expo3(cmd->Yaw, stabSettings.RateExpo[STABILIZATIONSETTINGS_RATEEXPO_YAW]) * stabSettings.ManualRate[STABILIZATIONSETTINGS_MANUALRATE_YAW] :
 	     (stab_settings[2] == STABILIZATIONDESIRED_STABILIZATIONMODE_VIRTUALBAR) ? cmd->Yaw :
 	     (stab_settings[2] == STABILIZATIONDESIRED_STABILIZATIONMODE_HORIZON) ? cmd->Yaw :
+	     (stab_settings[2] == STABILIZATIONDESIRED_STABILIZATIONMODE_MWRATE) ? expo3(cmd->Yaw, stabSettings.RateExpo[STABILIZATIONSETTINGS_RATEEXPO_YAW]) :
 	     (stab_settings[2] == STABILIZATIONDESIRED_STABILIZATIONMODE_SYSTEMIDENT) ? cmd->Yaw * stabSettings.YawMax :
 	     (stab_settings[2] == STABILIZATIONDESIRED_STABILIZATIONMODE_COORDINATEDFLIGHT) ? cmd->Yaw :
 	     0; // this is an invalid mode
@@ -902,8 +912,6 @@ static void altitude_hold_desired(ManualControlCommandData * cmd, bool flightMod
 		return;
 	}
 
-	const float DEADBAND_HIGH = 0.55f;
-	const float DEADBAND_LOW = 0.45f;
 	const float MIN_CLIMB_RATE = 0.01f;
 	
 	AltitudeHoldDesiredData altitudeHoldDesired;
@@ -925,9 +933,13 @@ static void altitude_hold_desired(ManualControlCommandData * cmd, bool flightMod
 		altitudeHoldDesired.Altitude = -current_down;
 		altitudeHoldDesired.ClimbRate = 0;
 	} else {
-		uint8_t altitude_hold_expo, altitude_hold_maxrate;
+		uint8_t altitude_hold_expo, altitude_hold_maxrate, altitude_hold_deadband;
 		AltitudeHoldSettingsMaxRateGet(&altitude_hold_maxrate);
 		AltitudeHoldSettingsExpoGet(&altitude_hold_expo);
+		AltitudeHoldSettingsDeadbandGet(&altitude_hold_deadband);
+
+		const float DEADBAND_HIGH = 0.50f + altitude_hold_deadband * 0.01f;
+		const float DEADBAND_LOW = 0.50f - altitude_hold_deadband * 0.01f;
 
 		float climb_rate = 0.0f;
 		if (cmd->Throttle > DEADBAND_HIGH) {
@@ -937,6 +949,9 @@ static void altitude_hold_desired(ManualControlCommandData * cmd, bool flightMod
 			climb_rate = ((cmd->Throttle < 0) ? DEADBAND_LOW : DEADBAND_LOW - cmd->Throttle) / DEADBAND_LOW;
 			climb_rate = -expo3(climb_rate, altitude_hold_expo) * altitude_hold_maxrate;
 		}
+
+		// When throttle is negative tell the module that we are in landing mode
+		altitudeHoldDesired.Land = (cmd->Throttle < 0) ? ALTITUDEHOLDDESIRED_LAND_TRUE : ALTITUDEHOLDDESIRED_LAND_FALSE;
 
 		// If more than MIN_CLIMB_RATE enter vario mode
 		if (fabsf(climb_rate) > MIN_CLIMB_RATE) {

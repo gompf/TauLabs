@@ -79,11 +79,14 @@ HEADERS += $$UAVOBJECT_SYNTHETICS/accels.h \
     $$UAVOBJECT_SYNTHETICS/hwrevomini.h \
     $$UAVOBJECT_SYNTHETICS/hwsparky.h \
     $$UAVOBJECT_SYNTHETICS/hwsparkybgc.h \
+    $$UAVOBJECT_SYNTHETICS/hwtaulink.h \
     $$UAVOBJECT_SYNTHETICS/i2cvm.h \
     $$UAVOBJECT_SYNTHETICS/i2cvmuserprogram.h \
     $$UAVOBJECT_SYNTHETICS/inssettings.h \
     $$UAVOBJECT_SYNTHETICS/insstate.h \
     $$UAVOBJECT_SYNTHETICS/loitercommand.h \
+    $$UAVOBJECT_SYNTHETICS/loggingsettings.h \
+    $$UAVOBJECT_SYNTHETICS/loggingstats.h \
     $$UAVOBJECT_SYNTHETICS/magbias.h \
     $$UAVOBJECT_SYNTHETICS/magnetometer.h \
     $$UAVOBJECT_SYNTHETICS/manualcontrolsettings.h \
@@ -91,11 +94,11 @@ HEADERS += $$UAVOBJECT_SYNTHETICS/accels.h \
     $$UAVOBJECT_SYNTHETICS/mixersettings.h \
     $$UAVOBJECT_SYNTHETICS/mixerstatus.h \
     $$UAVOBJECT_SYNTHETICS/modulesettings.h \
+    $$UAVOBJECT_SYNTHETICS/mwratesettings.h \
     $$UAVOBJECT_SYNTHETICS/nedaccel.h \
     $$UAVOBJECT_SYNTHETICS/nedposition.h \
     $$UAVOBJECT_SYNTHETICS/objectpersistence.h \
     $$UAVOBJECT_SYNTHETICS/oplinksettings.h \
-    $$UAVOBJECT_SYNTHETICS/oplinkstatus.h \
     $$UAVOBJECT_SYNTHETICS/overosyncsettings.h \
     $$UAVOBJECT_SYNTHETICS/overosyncstats.h \
     $$UAVOBJECT_SYNTHETICS/pathdesired.h \
@@ -105,8 +108,10 @@ HEADERS += $$UAVOBJECT_SYNTHETICS/accels.h \
     $$UAVOBJECT_SYNTHETICS/picocstatus.h \
     $$UAVOBJECT_SYNTHETICS/poilocation.h \
     $$UAVOBJECT_SYNTHETICS/positionactual.h \
+    $$UAVOBJECT_SYNTHETICS/radiocombridgestats.h \
     $$UAVOBJECT_SYNTHETICS/ratedesired.h \
     $$UAVOBJECT_SYNTHETICS/receiveractivity.h \
+    $$UAVOBJECT_SYNTHETICS/rfm22breceiver.h \
     $$UAVOBJECT_SYNTHETICS/sensorsettings.h \
     $$UAVOBJECT_SYNTHETICS/sessionmanaging.h \
     $$UAVOBJECT_SYNTHETICS/sonaraltitude.h \
@@ -119,6 +124,7 @@ HEADERS += $$UAVOBJECT_SYNTHETICS/accels.h \
     $$UAVOBJECT_SYNTHETICS/systemsettings.h \
     $$UAVOBJECT_SYNTHETICS/tabletinfo.h \
     $$UAVOBJECT_SYNTHETICS/taskinfo.h \
+    $$UAVOBJECT_SYNTHETICS/rfm22bstatus.h \
     $$UAVOBJECT_SYNTHETICS/trimangles.h \
     $$UAVOBJECT_SYNTHETICS/trimanglessettings.h \
     $$UAVOBJECT_SYNTHETICS/txpidsettings.h \
@@ -189,11 +195,14 @@ SOURCES += $$UAVOBJECT_SYNTHETICS/accels.cpp \
     $$UAVOBJECT_SYNTHETICS/hwrevomini.cpp \
     $$UAVOBJECT_SYNTHETICS/hwsparky.cpp \
     $$UAVOBJECT_SYNTHETICS/hwsparkybgc.cpp \
+    $$UAVOBJECT_SYNTHETICS/hwtaulink.cpp \
     $$UAVOBJECT_SYNTHETICS/i2cvm.cpp \
     $$UAVOBJECT_SYNTHETICS/i2cvmuserprogram.cpp \
     $$UAVOBJECT_SYNTHETICS/inssettings.cpp \
     $$UAVOBJECT_SYNTHETICS/insstate.cpp \
     $$UAVOBJECT_SYNTHETICS/loitercommand.cpp \
+    $$UAVOBJECT_SYNTHETICS/loggingsettings.cpp \
+    $$UAVOBJECT_SYNTHETICS/loggingstats.cpp \
     $$UAVOBJECT_SYNTHETICS/magbias.cpp \
     $$UAVOBJECT_SYNTHETICS/magnetometer.cpp \
     $$UAVOBJECT_SYNTHETICS/manualcontrolsettings.cpp \
@@ -201,11 +210,11 @@ SOURCES += $$UAVOBJECT_SYNTHETICS/accels.cpp \
     $$UAVOBJECT_SYNTHETICS/mixersettings.cpp \
     $$UAVOBJECT_SYNTHETICS/mixerstatus.cpp \
     $$UAVOBJECT_SYNTHETICS/modulesettings.cpp \
+    $$UAVOBJECT_SYNTHETICS/mwratesettings.cpp \
     $$UAVOBJECT_SYNTHETICS/nedaccel.cpp \
     $$UAVOBJECT_SYNTHETICS/nedposition.cpp \
     $$UAVOBJECT_SYNTHETICS/objectpersistence.cpp \
     $$UAVOBJECT_SYNTHETICS/oplinksettings.cpp \
-    $$UAVOBJECT_SYNTHETICS/oplinkstatus.cpp \
     $$UAVOBJECT_SYNTHETICS/overosyncsettings.cpp \
     $$UAVOBJECT_SYNTHETICS/overosyncstats.cpp \
     $$UAVOBJECT_SYNTHETICS/pathdesired.cpp \
@@ -215,8 +224,10 @@ SOURCES += $$UAVOBJECT_SYNTHETICS/accels.cpp \
     $$UAVOBJECT_SYNTHETICS/picocstatus.cpp \
     $$UAVOBJECT_SYNTHETICS/poilocation.cpp \
     $$UAVOBJECT_SYNTHETICS/positionactual.cpp \
+    $$UAVOBJECT_SYNTHETICS/radiocombridgestats.cpp \
     $$UAVOBJECT_SYNTHETICS/ratedesired.cpp \
     $$UAVOBJECT_SYNTHETICS/receiveractivity.cpp \
+    $$UAVOBJECT_SYNTHETICS/rfm22breceiver.cpp \
     $$UAVOBJECT_SYNTHETICS/sensorsettings.cpp \
     $$UAVOBJECT_SYNTHETICS/sessionmanaging.cpp \
     $$UAVOBJECT_SYNTHETICS/sonaraltitude.cpp \
@@ -229,6 +240,7 @@ SOURCES += $$UAVOBJECT_SYNTHETICS/accels.cpp \
     $$UAVOBJECT_SYNTHETICS/systemstats.cpp \
     $$UAVOBJECT_SYNTHETICS/tabletinfo.cpp \
     $$UAVOBJECT_SYNTHETICS/taskinfo.cpp \
+    $$UAVOBJECT_SYNTHETICS/rfm22bstatus.cpp \
     $$UAVOBJECT_SYNTHETICS/trimangles.cpp \
     $$UAVOBJECT_SYNTHETICS/trimanglessettings.cpp \
     $$UAVOBJECT_SYNTHETICS/txpidsettings.cpp \

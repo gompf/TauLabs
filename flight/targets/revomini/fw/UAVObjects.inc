@@ -69,6 +69,7 @@ UAVOBJSRCFILENAMES += manualcontrolcommand
 UAVOBJSRCFILENAMES += manualcontrolsettings
 UAVOBJSRCFILENAMES += mixersettings
 UAVOBJSRCFILENAMES += mixerstatus
+UAVOBJSRCFILENAMES += mwratesettings
 UAVOBJSRCFILENAMES += nedaccel
 UAVOBJSRCFILENAMES += nedposition
 UAVOBJSRCFILENAMES += objectpersistence
@@ -80,6 +81,7 @@ UAVOBJSRCFILENAMES += pathstatus
 UAVOBJSRCFILENAMES += poilocation
 UAVOBJSRCFILENAMES += positionactual
 UAVOBJSRCFILENAMES += ratedesired
+UAVOBJSRCFILENAMES += rfm22breceiver
 UAVOBJSRCFILENAMES += sonaraltitude
 UAVOBJSRCFILENAMES += stabilizationdesired
 UAVOBJSRCFILENAMES += stabilizationsettings
@@ -117,8 +119,7 @@ UAVOBJSRCFILENAMES += trimanglessettings
 UAVOBJSRCFILENAMES += sessionmanaging
 
 #Support for radio module on RM
-UAVOBJSRCFILENAMES += oplinkstatus
-UAVOBJSRCFILENAMES += oplinksettings
+UAVOBJSRCFILENAMES += rfm22bstatus
 
 
 UAVOBJSRC = $(foreach UAVOBJSRCFILE,$(UAVOBJSRCFILENAMES),$(OPUAVSYNTHDIR)/$(UAVOBJSRCFILE).c )
